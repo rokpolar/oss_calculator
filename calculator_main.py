@@ -52,13 +52,6 @@ class Main(QDialog):
         button_product.clicked.connect(lambda state, operation = "*": self.button_operation_clicked(operation))
         button_division.clicked.connect(lambda state, operation = "/": self.button_operation_clicked(operation))
         
-         ### 사칙연산 버튼을 layout_operation 레이아웃에 추가
-        layout_operation.addWidget(button_plus)
-        layout_operation.addWidget(button_minus)
-        layout_operation.addWidget(button_product)
-        layout_operation.addWidget(button_division)
-
-        
                 ## 새 연산 버튼을 layout_new_operation에 추가하자 <<<<<<<<<
         layout_new_operation.addWidget(button_percent)
         layout_new_operation.addWidget(button_CE)
@@ -107,7 +100,6 @@ class Main(QDialog):
         main_layout.addLayout(layout_equation_solution)
         main_layout.addLayout(layout_new_operation) # <<<<<<<<새 연산 추가
         main_layout.addLayout(layout_new_operation_2) # <<<<<<<<새 연산 추가
-        main_layout.addLayout(layout_operation)
         main_layout.addLayout(layout_clear_equal)
         main_layout.addLayout(layout_number)
 
