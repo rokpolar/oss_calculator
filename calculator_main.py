@@ -1,3 +1,5 @@
+import math # MATH IMPORT
+import numpy as np
 import sys
 from PyQt5.QtWidgets import *
 
@@ -6,9 +8,11 @@ class Main(QDialog):
         super().__init__()
         self.init_ui()
 
+    equation = ""
+
     def init_ui(self):
         main_layout = QVBoxLayout()
-
+        equation_string = ""
         ### 각 위젯을 배치할 레이아웃을 미리 만들어 둠
         layout_new_operation = QHBoxLayout() # 새 연산들 자리 추가
         layout_new_operation_2 = QHBoxLayout() # 새 연산 두번째 줄 추가
@@ -17,19 +21,9 @@ class Main(QDialog):
         layout_number = QGridLayout()
         layout_equation_solution = QFormLayout()
 
-        ### 수식 입력과 답 출력을 위한 LineEdit 위젯 생성
-        label_equation = QLabel("Equation: ")
-        label_solution = QLabel("Number: ")
-        self.equation = QLineEdit("")
-        self.solution = QLineEdit("")
-
-        self.number_display = QLineEdit("")
-
-        ### layout_equation_solution 레이아웃에 수식, 답 위젯을 추가
-        # layout_equation_solution.addRow(label_equation, self.equation)
-        # layout_equation_solution.addRow(label_solution, self.solution)
-        layout_equation_solution.addRow(self.number_display)
-
+        self.num_display = QLineEdit("")
+        layout_equation_solution.addRow(self.num_display)
+    
         ### 사칙연상 버튼 생성
         button_percent = QPushButton("%")
         button_CE = QPushButton("CE")
@@ -51,8 +45,9 @@ class Main(QDialog):
         button_minus.clicked.connect(lambda state, operation = "-": self.button_operation_clicked(operation))
         button_product.clicked.connect(lambda state, operation = "*": self.button_operation_clicked(operation))
         button_division.clicked.connect(lambda state, operation = "/": self.button_operation_clicked(operation))
-        
-                ## 새 연산 버튼을 layout_new_operation에 추가하자 <<<<<<<<<
+        button_percent.clicked.connect(lambda state, operation = "%": self.button_operation_clicked(operation)) ########PERCENT
+
+        ## 새 연산 버튼을 layout_new_operation에 추가하자 <<<<<<<<<
         layout_new_operation.addWidget(button_percent)
         layout_new_operation.addWidget(button_CE)
         layout_new_operation.addWidget(button_C)
@@ -67,7 +62,7 @@ class Main(QDialog):
         ### =, clear, backspace 버튼 클릭 시 시그널 설정 > num_diplay 초기화
         button_equal.clicked.connect(self.button_equal_clicked)
         button_backspace.clicked.connect(self.button_backspace_clicked)
-        
+
         button_CE.clicked.connect(self.button_CE_clicked)
         button_C.clicked.connect(self.button_C_clicked)
         button_1x.clicked.connect(self.button_1x_clicked)
@@ -112,32 +107,87 @@ class Main(QDialog):
         self.setLayout(main_layout)
         self.show()
 
-    #################
-    ### functions ###
-    #################
-    def number_button_clicked(self, num):
-        equation = self.equation.text()
-        equation += str(num)
-        self.equation.setText(equation)
 
-    def button_operation_clicked(self, operation):
-        equation = self.equation.text()
-        equation += operation
-        self.equation.setText(equation)
+    global narray
+    narray = np.array([])
+    global val 
+    val = 0    
+    
+    def number_button_clicked(self, num):
+        global narray
+        narray = np.append(narray, np.array([num]))
+        num_display = self.num_display.text()
+        num_display += str(num)
+        self.num_display.setText(num_display)
+        
+
+    def button_operation_clicked(self, operation): #연산자 클릭 시 num_display를 초기화
+       global val
+       self.num_display.setText("")
+       if operation == "%":
+            val = 1
+       elif operation == "+": 
+            val = 2
+       elif operation == "-":
+            val = 3
+       elif operation == "*":
+            val = 4
+       elif operation == "/":
+            val = 5
 
     def button_equal_clicked(self):
-        equation = self.equation.text()
-        solution = eval(equation)
-        self.solution.setText(str(solution))
+        num_display = self.num_display.text()
+        solution=0
+        if val==1:
+            solution = narray[0] % narray[1]
+        elif val==2:
+            solution =narray[0] + narray[1]
+        elif val==3:
+            solution = narray[0] - narray[1]
+        elif val==4:
+            solution = narray[0] * narray[1]
+        elif val==5:
+            solution = narray[0] / narray[1]
+        else:
+            print("ERROR")
 
-    def button_clear_clicked(self):
-        self.equation.setText("")
-        self.solution.setText("")
+        solution = int(solution)
+        self.num_display.setText(str(solution))
 
     def button_backspace_clicked(self):
-        equation = self.equation.text()
-        equation = equation[:-1]
-        self.equation.setText(equation)
+        num_display = self.num_display.text()
+        num_display = num_display[:-1]
+        self.num_display.setText(num_display)
+
+    def  button_CE_clicked(self):
+        num_display = self.num_display.text()
+        num_display = num_display[:-1]
+        self.num_display.setText(num_display)
+
+    def  button_C_clicked(self):
+        global narray
+        global val
+        self.num_display.setText("")
+        narray=np.array([])
+        val = 0
+    
+    def button_1x_clicked(self):
+        n = int(self.num_display.text())
+        self.num_display.setText(str(1/n))
+
+    def button_pow2_clicked(self):
+        n = int(self.num_display.text())
+        result = math.pow(n,2)
+        self.num_display.setText(str(result))
+
+    def button_sqrt_clicked(self):
+        n = int(self.num_display.text())
+        result = math.sqrt(n)
+        self.num_display.setText(str(result))
+
+    def button_pmn_clicked(self):
+        n=int(self.num_display.text()) * (-1)
+        self.num_display.setText(str(n))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
