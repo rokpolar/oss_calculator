@@ -66,11 +66,15 @@ class Main(QDialog):
         
         ### =, clear, backspace 버튼 클릭 시 시그널 설정 > num_diplay 초기화
         button_equal.clicked.connect(self.button_equal_clicked)
-        #button_clear.clicked.connect(self.button_clear_clicked)
         button_backspace.clicked.connect(self.button_backspace_clicked)
+        
+        button_CE.clicked.connect(self.button_CE_clicked)
+        button_C.clicked.connect(self.button_C_clicked)
+        button_1x.clicked.connect(self.button_1x_clicked)
+        button_pow2.clicked.connect(self.button_pow2_clicked)
+        button_sqrt.clicked.connect(self.button_sqrt_clicked)
 
-
-                ### 숫자 버튼 생성하고, layout_number 레이아웃에 추가
+        ### 숫자 버튼 생성하고, layout_number 레이아웃에 추가
         ### 각 숫자 버튼을 클릭했을 때, 숫자가 수식창에 입력 될 수 있도록 시그널 설정
         number_button_dict = {}
         for number in range(0, 10):
@@ -93,13 +97,15 @@ class Main(QDialog):
         button_dot.clicked.connect(lambda state, num = ".": self.number_button_clicked(num))
         layout_number.addWidget(button_dot, 3, 2)
 
-        button_plus_minus = QPushButton("+/-") # + / - 버튼 추가
-        layout_number.addWidget(button_plus_minus,3, 0)
+        button_pmn = QPushButton("+/-") # + / - 버튼 추가
+        layout_number.addWidget(button_pmn,3, 0)
+        button_pmn.clicked.connect(self.button_pmn_clicked)
 
         ### 각 레이아웃을 main_layout 레이아웃에 추가
         main_layout.addLayout(layout_equation_solution)
         main_layout.addLayout(layout_new_operation) # <<<<<<<<새 연산 추가
         main_layout.addLayout(layout_new_operation_2) # <<<<<<<<새 연산 추가
+        main_layout.addLayout(layout_operation)
         main_layout.addLayout(layout_clear_equal)
         main_layout.addLayout(layout_number)
 
